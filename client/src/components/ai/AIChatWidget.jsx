@@ -63,9 +63,9 @@ const AIChatWidget = () => {
 
       {/* Chat Drawer Window */}
       {isOpen && (
-        <div className="w-80 sm:w-96 glass-panel bg-[#151c2e] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[480px] animate-slideUp">
+        <div className="w-80 sm:w-96 glass-panel bg-[#151c2e] border border-slate-200/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[480px] animate-slideUp">
           {/* Header */}
-          <div className="bg-gradient-to-r from-rose-900/80 to-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-rose-900/80 to-slate-900 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="p-1.5 rounded-lg bg-rose-500/20 text-rose-300">
                 <Bot className="w-5 h-5" />
@@ -79,7 +79,7 @@ const AIChatWidget = () => {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+              className="text-slate-500 hover:text-white p-1 rounded-lg hover:bg-white"
             >
               <X className="w-5 h-5" />
             </button>
@@ -96,12 +96,12 @@ const AIChatWidget = () => {
                   className={`max-w-[85%] rounded-2xl p-3 leading-relaxed ${
                     msg.role === 'user'
                       ? 'bg-rose-600 text-white rounded-br-none'
-                      : 'bg-slate-900/90 text-slate-200 border border-slate-800 rounded-bl-none'
+                      : 'bg-lightbg/90 text-slate-800 border border-slate-200 rounded-bl-none'
                   }`}
                 >
                   <p>{msg.text}</p>
                   {msg.recommendations && (
-                    <ul className="mt-2 pt-2 border-t border-slate-800 space-y-1 text-[11px] text-emerald-300">
+                    <ul className="mt-2 pt-2 border-t border-slate-200 space-y-1 text-[11px] text-emerald-300">
                       {msg.recommendations.map((rec, i) => (
                         <li key={i}>• {rec}</li>
                       ))}
@@ -112,7 +112,7 @@ const AIChatWidget = () => {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-slate-900 text-slate-400 p-3 rounded-2xl border border-slate-800 flex items-center space-x-2 text-xs">
+                <div className="bg-lightbg text-slate-500 p-3 rounded-2xl border border-slate-200 flex items-center space-x-2 text-xs">
                   <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
                   <span>Synthesizing LLM insight...</span>
                 </div>
@@ -121,13 +121,13 @@ const AIChatWidget = () => {
           </div>
 
           {/* Input Form */}
-          <form onSubmit={handleSend} className="p-3 bg-[#0f172a] border-t border-slate-800 flex items-center space-x-2">
+          <form onSubmit={handleSend} className="p-3 bg-[#0f172a] border-t border-slate-200 flex items-center space-x-2">
             <input
               type="text"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Ask AI about donor supply or requests..."
-              className="flex-1 bg-slate-900 text-white text-xs px-3 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-rose-500 placeholder-slate-500"
+              className="flex-1 bg-lightbg text-white text-xs px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-500 placeholder-slate-500"
             />
             <button
               type="submit"

@@ -3,7 +3,7 @@ import { HeartHandshake, ShieldCheck, Activity, Github, Twitter } from 'lucide-r
 
 const Footer = () => {
   return (
-    <footer className="bg-[#070a12] border-t border-slate-800/80 pt-12 pb-8 mt-20 text-slate-400 text-sm">
+    <footer className="bg-[#070a12] border-t border-slate-200/80 pt-12 pb-8 mt-20 text-slate-500 text-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-3">
@@ -13,7 +13,7 @@ const Footer = () => {
               </div>
               <span className="text-lg font-extrabold text-white">LifeLink</span>
             </div>
-            <p className="text-slate-400 text-xs leading-relaxed">
+            <p className="text-slate-500 text-xs leading-relaxed">
               Smart blood donation & emergency donor matching engine powered by AI narrative intelligence and location-based proximity scoring.
             </p>
           </div>
@@ -43,11 +43,11 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-slate-800/60 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500">
+        <div className="border-t border-slate-200/60 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500">
           <p>© {new Date().getFullYear()} LifeLink Inc. All rights reserved.</p>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <span className="flex items-center text-emerald-400"><Activity className="w-3.5 h-3.5 mr-1" /> API Gateway Operational</span>
-            <span className="flex items-center text-slate-400"><ShieldCheck className="w-3.5 h-3.5 mr-1 text-sky-400" /> HIPAA / GeoJSON Encrypted</span>
+            <span className="flex items-center text-slate-500"><ShieldCheck className="w-3.5 h-3.5 mr-1 text-sky-400" /> HIPAA / GeoJSON Encrypted</span>
           </div>
         </div>
       </div>

@@ -21,11 +21,11 @@ export default {
           900: '#881337',
           dark: '#e63946',
         },
-        darkbg: {
-          DEFAULT: '#0b0f19',
-          card: '#151c2e',
-          hover: '#1e293b',
-          border: '#334155'
+        lightbg: {
+          DEFAULT: '#f8fafc',
+          card: '#ffffff',
+          hover: '#f1f5f9',
+          border: '#e2e8f0'
         }
       },
       fontFamily: {
