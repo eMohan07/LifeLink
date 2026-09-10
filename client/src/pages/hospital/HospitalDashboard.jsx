@@ -66,7 +66,7 @@ const HospitalDashboard = () => {
             <span className="text-xs font-bold uppercase tracking-wider">Hospital & Blood Bank Management</span>
           </div>
           <h1 className="text-3xl font-black text-white">{profile?.name || 'City General Medical Center'}</h1>
-          <p className="text-slate-500 text-xs mt-1">License: {profile?.licenseNumber || 'HOSP-VERIFIED-2026'}</p>
+          <p className="text-black text-xs mt-1">License: {profile?.licenseNumber || 'HOSP-VERIFIED-2026'}</p>
         </div>
 
         <Link
@@ -88,9 +88,9 @@ const HospitalDashboard = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {profile.inventory.map((item, i) => (
               <div key={i} className="glass-panel p-4 rounded-2xl border border-slate-200 bg-[#151c2e] text-center">
-                <span className="text-xs font-bold text-slate-500 block mb-1">{item.bloodGroup}</span>
+                <span className="text-xs font-bold text-black block mb-1">{item.bloodGroup}</span>
                 <span className="text-2xl font-black text-sky-400 block">{item.units}</span>
-                <span className="text-[10px] text-slate-500 block mt-1">Units</span>
+                <span className="text-[10px] text-black block mt-1">Units</span>
               </div>
             ))}
           </div>
@@ -111,7 +111,7 @@ const HospitalDashboard = () => {
                   <Badge bloodGroup={req.bloodGroup} />
                   <span className="font-bold text-white text-sm">{req.patientName}</span>
                 </div>
-                <div className="text-xs text-slate-500 flex items-center">
+                <div className="text-xs text-black flex items-center">
                   <MapPin className="w-3.5 h-3.5 mr-1 text-rose-400" />
                   <span>{req.address}</span>
                 </div>

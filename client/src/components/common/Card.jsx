@@ -3,8 +3,8 @@ import React from 'react';
 const Card = ({ children, className = '', hover = true, title = '', icon: Icon = null, action = null }) => {
   return (
     <div
-      className={`glass-panel rounded-2xl p-6 border border-slate-200/80 bg-[#151c2e]/70 shadow-xl ${
-        hover ? 'hover:border-rose-500/30 hover:bg-[#1a233a] transition-all duration-300' : ''
+      className={`glass-panel rounded-2xl p-6 border border-slate-200/80 shadow-xl ${
+        hover ? 'glass-panel-hover' : ''
       } ${className}`}
     >
       {(title || Icon || action) && (
@@ -15,7 +15,7 @@ const Card = ({ children, className = '', hover = true, title = '', icon: Icon =
                 <Icon className="w-5 h-5" />
               </div>
             )}
-            {title && <h3 className="text-lg font-bold text-slate-900 tracking-tight">{title}</h3>}
+            {title && <h3 className="text-lg font-bold text-black tracking-tight">{title}</h3>}
           </div>
           {action && <div>{action}</div>}
         </div>

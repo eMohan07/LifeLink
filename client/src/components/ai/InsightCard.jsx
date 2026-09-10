@@ -16,7 +16,7 @@ const InsightCard = ({ insight }) => {
           </div>
           <div>
             <h3 className="text-lg font-bold text-white tracking-tight">{title}</h3>
-            <p className="text-xs text-slate-500 flex items-center mt-0.5">
+            <p className="text-xs text-black flex items-center mt-0.5">
               <Cpu className="w-3.5 h-3.5 mr-1 text-rose-400" />
               LifeLink AI Service Layer • {new Date(generatedAt).toLocaleString()}
             </p>
@@ -27,7 +27,7 @@ const InsightCard = ({ insight }) => {
         </span>
       </div>
 
-      <p className="text-slate-700 text-sm leading-relaxed mb-6 bg-lightbg/60 p-4 rounded-xl border border-slate-200">
+      <p className="text-black text-sm leading-relaxed mb-6 bg-lightbg/60 p-4 rounded-xl border border-slate-200">
         {summary}
       </p>
 
@@ -36,7 +36,7 @@ const InsightCard = ({ insight }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           {Object.entries(metrics).map(([key, value]) => (
             <div key={key} className="bg-lightbg/80 p-3 rounded-xl border border-slate-200/80">
-              <span className="text-[11px] font-medium text-slate-500 capitalize block truncate">
+              <span className="text-[11px] font-medium text-black capitalize block truncate">
                 {key.replace(/([A-Z])/g, ' $1')}
               </span>
               <span className="text-base font-extrabold text-rose-400 block mt-1">
@@ -50,13 +50,13 @@ const InsightCard = ({ insight }) => {
       {/* Recommendations */}
       {recommendations && recommendations.length > 0 && (
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-black mb-3 flex items-center">
             <TrendingUp className="w-4 h-4 mr-1.5 text-emerald-400" />
             Strategic AI Recommendations
           </h4>
           <ul className="space-y-2">
             {recommendations.map((rec, index) => (
-              <li key={index} className="flex items-start space-x-2 text-xs text-slate-700 bg-emerald-950/20 p-2.5 rounded-lg border border-emerald-500/20">
+              <li key={index} className="flex items-start space-x-2 text-xs text-black bg-emerald-950/20 p-2.5 rounded-lg border border-emerald-500/20">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <span>{rec}</span>
               </li>

@@ -43,8 +43,8 @@ const EmergencyRequest = () => {
           <Activity className="w-4 h-4" />
           <span>Priority Emergency Portal</span>
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900">Broadcast Emergency Blood Need</h1>
-        <p className="text-slate-500 text-sm">
+        <h1 className="text-3xl font-extrabold text-black">Broadcast Emergency Blood Need</h1>
+        <p className="text-black text-sm">
           Submitting this request immediately triggers the Smart Matching Engine to evaluate nearby standby donors and send high-priority notifications.
         </p>
       </div>

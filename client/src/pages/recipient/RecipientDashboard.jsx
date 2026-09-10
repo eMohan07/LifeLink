@@ -33,7 +33,7 @@ const RecipientDashboard = () => {
       <div className="glass-panel rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-indigo-950/60 via-[#151c2e] to-[#151c2e] border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-black text-white">Recipient Dashboard</h1>
-          <p className="text-slate-700 text-sm mt-1">
+          <p className="text-black text-sm mt-1">
             Broadcast emergency requests and monitor real-time donor matching engine results.
           </p>
         </div>
@@ -56,7 +56,7 @@ const RecipientDashboard = () => {
           <Loader text="Fetching your requests..." />
         ) : requests.length === 0 ? (
           <Card hover={false} className="text-center py-12">
-            <p className="text-slate-500 text-sm mb-4">You have not created any emergency requests yet.</p>
+            <p className="text-black text-sm mb-4">You have not created any emergency requests yet.</p>
             <Link
               to="/recipient/create"
               className="inline-flex items-center px-4 py-2 rounded-xl bg-rose-600 text-white font-semibold text-xs"
@@ -74,18 +74,18 @@ const RecipientDashboard = () => {
                       <Badge bloodGroup={req.bloodGroup} />
                       <div>
                         <h3 className="text-base font-bold text-white">{req.patientName}</h3>
-                        <span className="text-xs text-slate-500">{req.unitsNeeded} unit(s)</span>
+                        <span className="text-xs text-black">{req.unitsNeeded} unit(s)</span>
                       </div>
                     </div>
                     <Badge status={req.status} />
                   </div>
 
-                  <div className="space-y-2 text-xs text-slate-700 mt-4 border-t border-slate-200 pt-3">
-                    <div className="flex items-center text-slate-500">
+                  <div className="space-y-2 text-xs text-black mt-4 border-t border-slate-200 pt-3">
+                    <div className="flex items-center text-black">
                       <MapPin className="w-4 h-4 mr-2 text-rose-400 shrink-0" />
                       <span>{req.address}</span>
                     </div>
-                    <div className="flex items-center text-slate-500">
+                    <div className="flex items-center text-black">
                       <Users className="w-4 h-4 mr-2 text-sky-400 shrink-0" />
                       <span>Matched Donors: {req.matchedDonorsCount || 0}</span>
                     </div>
@@ -93,7 +93,7 @@ const RecipientDashboard = () => {
                 </div>
 
                 <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500">Urgency: {req.urgency.toUpperCase()}</span>
+                  <span className="text-[11px] text-black">Urgency: {req.urgency.toUpperCase()}</span>
                   <Link
                     to={`/recipient/track/${req._id}`}
                     className="text-xs font-bold text-rose-400 hover:text-rose-300 flex items-center"

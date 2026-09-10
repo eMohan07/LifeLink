@@ -31,6 +31,21 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      animation: {
+        'spin-slow': 'spin 12s linear infinite',
+        'spin-reverse-slow': 'spin-reverse 15s linear infinite',
+        'flip-y': 'flipY 4s ease-in-out infinite',
+      },
+      keyframes: {
+        'spin-reverse': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(-360deg)' },
+        },
+        'flipY': {
+          '0%, 100%': { transform: 'rotateY(0deg)' },
+          '50%': { transform: 'rotateY(180deg)' },
+        }
+      }
     },
   },
   plugins: [],

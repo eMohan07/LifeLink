@@ -48,7 +48,7 @@ const AdminDashboard = () => {
         <div className="flex items-center space-x-3">
           <Link
             to="/admin/users"
-            className="px-4 py-2.5 rounded-xl glass-panel text-slate-800 hover:text-white border border-slate-200 text-xs font-bold transition-all flex items-center space-x-1"
+            className="px-4 py-2.5 rounded-xl glass-panel text-black hover:text-rose-500 border border-slate-200 text-xs font-bold transition-all flex items-center space-x-1"
           >
             <Users className="w-4 h-4 mr-1 text-sky-400" />
             <span>User Management</span>
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card hover={false} className="bg-lightbg/60">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Registered Donors</span>
+          <span className="text-xs font-semibold text-black uppercase tracking-wider block">Registered Donors</span>
           <span className="text-3xl font-black text-white block mt-1">{summary?.totalDonors || 0}</span>
           <span className="text-[11px] text-emerald-400 font-semibold block mt-1">
             {summary?.availableDonors || 0} Active Standby
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
         </Card>
 
         <Card hover={false} className="bg-lightbg/60">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Emergency Requests</span>
+          <span className="text-xs font-semibold text-black uppercase tracking-wider block">Emergency Requests</span>
           <span className="text-3xl font-black text-rose-500 block mt-1">{summary?.totalRequests || 0}</span>
           <span className="text-[11px] text-amber-400 font-semibold block mt-1">
             {summary?.openRequests || 0} Active Broadcasts
@@ -82,15 +82,15 @@ const AdminDashboard = () => {
         </Card>
 
         <Card hover={false} className="bg-lightbg/60">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Fulfillment Rate</span>
+          <span className="text-xs font-semibold text-black uppercase tracking-wider block">Fulfillment Rate</span>
           <span className="text-3xl font-black text-emerald-400 block mt-1">{summary?.fulfillmentRate || 0}%</span>
-          <span className="text-[11px] text-slate-500 block mt-1">Target &gt; 80%</span>
+          <span className="text-[11px] text-black block mt-1">Target &gt; 80%</span>
         </Card>
 
         <Card hover={false} className="bg-lightbg/60">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Completed Donations</span>
+          <span className="text-xs font-semibold text-black uppercase tracking-wider block">Completed Donations</span>
           <span className="text-3xl font-black text-sky-400 block mt-1">{summary?.totalDonations || 0}</span>
-          <span className="text-[11px] text-slate-500 block mt-1">Verified In-Hospital</span>
+          <span className="text-[11px] text-black block mt-1">Verified In-Hospital</span>
         </Card>
       </div>
 
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
 
         {/* Live System Activity Feed */}
         <Card title="AI Intelligence Summary" icon={Sparkles} hover={false} className="lg:col-span-2">
-          <p className="text-slate-700 text-sm leading-relaxed mb-4">
+          <p className="text-black text-sm leading-relaxed mb-4">
             LifeLink's dedicated AI Service continuously analyzes regional demand spikes, rare blood group shortages, and fulfillment rates to generate actionable recommendations for network administrators.
           </p>
           <Link
