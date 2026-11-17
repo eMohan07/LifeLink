@@ -107,8 +107,45 @@ function initFirebase() {
   auth = getAuth(app);
   initialized = true;
 
-  console.log(`[Firebase] Connected to Firestore project: ${activeProjectId}`);
+  console.log(`Firebase project: ${activeProjectId}`);
+  checkClientProjectId(activeProjectId);
   return { admin, db, auth, projectId: activeProjectId };
+}
+
+/**
+ * Validates that client and server Firebase project IDs align without logging any secrets.
+ */
+function checkClientProjectId(activeProjectId) {
+  try {
+    const candidatePaths = [
+      path.resolve(__dirname, '../../../client/.env'),
+      path.resolve(__dirname, '../../../client/.env.example'),
+      path.resolve(process.cwd(), '../client/.env'),
+      path.resolve(process.cwd(), '../client/.env.example'),
+      path.resolve(process.cwd(), 'client/.env'),
+      path.resolve(process.cwd(), 'client/.env.example'),
+    ];
+    let clientProjectId = null;
+    for (const p of candidatePaths) {
+      if (fs.existsSync(p)) {
+        const content = fs.readFileSync(p, 'utf8');
+        const match = content.match(/VITE_FIREBASE_PROJECT_ID\s*=\s*([^\r\n#]+)/);
+        if (match && match[1]) {
+          const val = match[1].trim().replace(/^['"]|['"]$/g, '');
+          if (val && !val.includes('your_project_id')) {
+            clientProjectId = val;
+            break;
+          }
+        }
+      }
+    }
+
+    if (clientProjectId && clientProjectId !== activeProjectId) {
+      console.warn(`⚠️  [Firebase Warning] Client project (${clientProjectId}) does not match server project (${activeProjectId}). Google Sign-In will fail if projects differ.`);
+    }
+  } catch (e) {
+    // Non-blocking diagnostic
+  }
 }
 
 /**

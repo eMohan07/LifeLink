@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../context/ToastContext';
-import { signInWithGooglePopup } from '../../firebase';
+import {
+  signInWithGooglePopup,
+  signInWithGoogleRedirect,
+  checkGoogleRedirectResult,
+} from '../../firebase';
 import { BLOOD_GROUPS } from '../../utils/bloodCompatibility';
-import { Droplet, Phone, ArrowRight, X, Loader2 } from 'lucide-react';
+import { Droplet, Phone, ArrowRight, X, Loader2, AlertCircle } from 'lucide-react';
 
 const GoogleIcon = () => (
   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
@@ -29,10 +33,11 @@ const GoogleIcon = () => (
 
 export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Google' }) => {
   const { loginWithGoogle } = useAuth();
-  const { showError, showSuccess } = useToast();
+  const { showSuccess } = useToast();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [inlineError, setInlineError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [pendingIdToken, setPendingIdToken] = useState('');
   const [pendingName, setPendingName] = useState('');
@@ -40,7 +45,142 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
   const [phone, setPhone] = useState('');
   const [submittingModal, setSubmittingModal] = useState(false);
 
+  // Check for redirect result on page mount (for fallback flow)
+  useEffect(() => {
+    let isMounted = true;
+    const processRedirectResult = async () => {
+      try {
+        const redirectData = await checkGoogleRedirectResult();
+        if (redirectData && isMounted) {
+          setLoading(true);
+          setInlineError(null);
+          const res = await loginWithGoogle({ idToken: redirectData.idToken });
+          if (res?.needsProfile) {
+            setPendingIdToken(redirectData.idToken);
+            setPendingName(res.name || redirectData.user?.displayName || 'Donor');
+            setShowModal(true);
+          } else if (res?._id) {
+            showSuccess(`Welcome, ${res.name}!`);
+            handleRedirect(res);
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          classifyAndSetError(err);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    processRedirectResult();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const classifyAndSetError = (err) => {
+    // 1. Popup closed or cancelled by user: reset silently
+    if (
+      err.code === 'auth/popup-closed-by-user' ||
+      err.code === 'auth/cancelled-popup-request'
+    ) {
+      setInlineError(null);
+      return;
+    }
+
+    // 2. Popup blocked by browser
+    if (err.code === 'auth/popup-blocked') {
+      setInlineError({
+        type: 'popup_blocked',
+        message: 'Popup was blocked by your browser. Please allow popups for this site, or try redirect sign-in.',
+      });
+      return;
+    }
+
+    // 3. Unauthorized domain in Firebase Console
+    if (err.code === 'auth/unauthorized-domain') {
+      setInlineError({
+        type: 'unauthorized_domain',
+        message: 'This domain is not authorized in Firebase Console (Authentication > Settings > Authorized domains).',
+      });
+      return;
+    }
+
+    // 4. Provider disabled in Firebase Console
+    if (err.code === 'auth/operation-not-allowed') {
+      setInlineError({
+        type: 'operation_not_allowed',
+        message: 'Google sign-in is not enabled in Firebase Console (Authentication > Sign-in method).',
+      });
+      return;
+    }
+
+    // 5. 15s timeout
+    if (
+      err.code === 'ECONNABORTED' ||
+      err.code === 'auth/popup-timeout' ||
+      err.message?.toLowerCase().includes('timeout')
+    ) {
+      setInlineError({
+        type: 'timeout',
+        message: 'Authentication timed out after 15 seconds. Please check your backend server and try again.',
+      });
+      return;
+    }
+
+    // 6. Network / server unreachable
+    if (
+      err.code === 'ERR_NETWORK' ||
+      err.code === 'auth/network-request-failed' ||
+      err.response?.status === 502 ||
+      err.response?.status === 503 ||
+      err.message?.includes('Network Error') ||
+      err.message?.includes("Can't reach the LifeLink server")
+    ) {
+      setInlineError({
+        type: 'unreachable',
+        message: "Can't reach the LifeLink server. Please check that the backend is running and try again.",
+      });
+      return;
+    }
+
+    // 7. Account type not allowed
+    if (
+      err.response?.status === 403 ||
+      err.response?.data?.errors?.code === 'ACCOUNT_TYPE_NOT_ALLOWED' ||
+      err.response?.data?.message?.toLowerCase().includes('account type') ||
+      err.message?.toLowerCase().includes('account type')
+    ) {
+      setInlineError({
+        type: 'account_type',
+        message: err.response?.data?.message || 'This account type is not permitted for Google sign-in. Please use email and password.',
+      });
+      return;
+    }
+
+    // 8. Token rejected
+    if (
+      err.response?.status === 401 ||
+      err.message?.toLowerCase().includes('invalid or expired') ||
+      err.message?.toLowerCase().includes('token')
+    ) {
+      setInlineError({
+        type: 'token_rejected',
+        message: err.response?.data?.message || 'Google authentication token was rejected. Please try again.',
+      });
+      return;
+    }
+
+    // Fallback general error
+    setInlineError({
+      type: 'general',
+      message: err.response?.data?.message || err.message || 'Google sign-in failed. Please try again.',
+    });
+  };
+
   const handleGoogleClick = async () => {
+    setInlineError(null);
     setLoading(true);
     try {
       const { idToken, user } = await signInWithGooglePopup();
@@ -55,9 +195,19 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
         handleRedirect(res);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Google sign-in failed';
-      showError(msg);
+      classifyAndSetError(err);
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRedirectSignIn = async () => {
+    setInlineError(null);
+    setLoading(true);
+    try {
+      await signInWithGoogleRedirect();
+    } catch (err) {
+      classifyAndSetError(err);
       setLoading(false);
     }
   };
@@ -65,7 +215,10 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     if (!bloodGroup) {
-      showError('Please select your blood group to complete registration');
+      setInlineError({
+        type: 'blood_group_required',
+        message: 'Please select your blood group to complete registration.',
+      });
       return;
     }
 
@@ -83,8 +236,7 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
         handleRedirect(res);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Failed to complete registration';
-      showError(msg);
+      classifyAndSetError(err);
     } finally {
       setSubmittingModal(false);
     }
@@ -118,7 +270,7 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
         id="google-signin-btn"
         onClick={handleGoogleClick}
         disabled={loading}
-        className="btn-secondary w-full py-3 px-4 rounded-xl text-xs font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+        className="btn-secondary w-full py-3 px-4 rounded-xl text-xs font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
       >
         {loading ? (
           <>
@@ -132,6 +284,41 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
           </>
         )}
       </button>
+
+      {/* Inline Friendly Error State with Try Again action */}
+      {inlineError && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="mt-3 p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-xs flex items-start gap-2.5 animate-fadeIn"
+        >
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-danger" />
+          <div className="flex-1 text-[11px] leading-relaxed">
+            <span className="font-semibold text-danger">{inlineError.message}</span>
+            <div className="mt-2 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setInlineError(null);
+                  handleGoogleClick();
+                }}
+                className="font-extrabold underline hover:text-danger-hover cursor-pointer"
+              >
+                Try again
+              </button>
+              {inlineError.type === 'popup_blocked' && (
+                <button
+                  type="button"
+                  onClick={handleRedirectSignIn}
+                  className="font-extrabold underline hover:text-danger-hover cursor-pointer"
+                >
+                  Use redirect sign-in
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal for Blood Group and Phone when needsProfile === true */}
       {showModal && (
@@ -211,7 +398,7 @@ export const GoogleLoginButton = ({ redirect = '/', label = 'Continue with Googl
                 <button
                   type="submit"
                   disabled={submittingModal || !bloodGroup}
-                  className="btn-primary w-full py-3.5 rounded-xl text-xs justify-center flex items-center space-x-2 disabled:opacity-50"
+                  className="btn-primary w-full py-3.5 rounded-xl text-xs justify-center flex items-center space-x-2 disabled:opacity-50 cursor-pointer"
                 >
                   {submittingModal ? (
                     <>

@@ -1,5 +1,12 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+} from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -33,19 +40,65 @@ googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 /**
  * Triggers Google Sign-in Popup and returns the user's ID token.
+ * Includes a 60-second safety timeout so the promise never hangs indefinitely.
  */
-export const signInWithGooglePopup = async () => {
+export const signInWithGooglePopup = async (timeoutMs = 60000) => {
   if (missingKeys.length > 0) {
     throw new Error(
       `Firebase client credentials are not configured. Missing: ${missingKeys.join(', ')}`
     );
   }
-  const result = await signInWithPopup(auth, googleProvider);
-  const idToken = await result.user.getIdToken();
-  return {
-    user: result.user,
-    idToken,
-  };
+
+  let timeoutId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      const err = new Error('Google sign-in popup timed out. Please try again or use redirect.');
+      err.code = 'auth/popup-timeout';
+      reject(err);
+    }, timeoutMs);
+  });
+
+  try {
+    const popupPromise = signInWithPopup(auth, googleProvider);
+    const result = await Promise.race([popupPromise, timeoutPromise]);
+    clearTimeout(timeoutId);
+    const idToken = await result.user.getIdToken();
+    return {
+      user: result.user,
+      idToken,
+    };
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
+
+/**
+ * Triggers Google Sign-in via full-page redirect (robust fallback when popups are blocked or COOP-isolated)
+ */
+export const signInWithGoogleRedirect = async () => {
+  if (missingKeys.length > 0) {
+    throw new Error(
+      `Firebase client credentials are not configured. Missing: ${missingKeys.join(', ')}`
+    );
+  }
+  return await signInWithRedirect(auth, googleProvider);
+};
+
+/**
+ * Checks for a pending redirect result upon page load
+ */
+export const checkGoogleRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth);
+    if (!result || !result.user) return null;
+    const idToken = await result.user.getIdToken();
+    return {
+      user: result.user,
+      idToken,
+    };
+  } catch (err) {
+    throw err;
+  }
 };
 
 /**
