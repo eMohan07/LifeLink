@@ -66,13 +66,13 @@ const Navbar = () => {
         } px-3 sm:px-6`}
       >
         <nav
-          className={`pointer-events-auto w-full transition-all duration-300 rounded-2xl sm:rounded-full border border-hairline shadow-spatial-raised backdrop-blur-2xl liquid-lens ${
+          className={`pointer-events-auto w-full max-w-7xl transition-all duration-300 rounded-2xl sm:rounded-full border border-hairline shadow-spatial-raised backdrop-blur-2xl liquid-lens ${
             scrolled
-              ? 'max-w-6xl py-2 sm:py-2.5 px-4 sm:px-6 bg-surface/90 shadow-spatial-floating'
-              : 'max-w-7xl py-2.5 sm:py-3.5 px-4 sm:px-7 bg-surface/80'
+              ? 'py-2 sm:py-2.5 px-4 sm:px-6 bg-surface/90 shadow-spatial-floating'
+              : 'py-2.5 sm:py-3.5 px-4 sm:px-7 bg-surface/80'
           }`}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2 xl:gap-4 min-w-0">
             {/* LEFT: Brand Logo */}
             <Link to="/" className="flex items-center space-x-3 group shrink-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-danger flex items-center justify-center shadow-glow-danger group-hover:scale-105 transition-transform duration-300">
@@ -89,14 +89,14 @@ const Navbar = () => {
             </Link>
 
             {/* CENTER: Navigation Links with Liquid Active Indicator (Crimson Reserved) */}
-            <div className="hidden lg:flex items-center justify-center space-x-1 xl:space-x-1.5 shrink-0">
+            <div className="hidden lg:flex items-center justify-center space-x-0.5 xl:space-x-1 shrink-0">
               {navLinks.map((link) => {
                 const active = isActive(link.to);
                 return (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`relative px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                    className={`relative px-2 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
                       active ? 'text-primary' : 'text-secondary hover:text-primary'
                     }`}
                   >
@@ -118,7 +118,7 @@ const Navbar = () => {
                   {isIndividual && (
                     <Link
                       to="/donor/dashboard"
-                      className={`relative px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                      className={`relative px-2 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
                         isActive('/donor') || isActive('/individual')
                           ? 'text-primary'
                           : 'text-secondary hover:text-primary'
@@ -137,7 +137,7 @@ const Navbar = () => {
                   {isHospital && (
                     <Link
                       to="/hospital/dashboard"
-                      className={`relative px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                      className={`relative px-2 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
                         isActive('/hospital')
                           ? 'text-primary'
                           : 'text-secondary hover:text-primary'
@@ -156,7 +156,7 @@ const Navbar = () => {
                   {isAdmin && (
                     <Link
                       to="/admin/dashboard"
-                      className={`relative px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                      className={`relative px-2 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
                         isActive('/admin')
                           ? 'text-primary'
                           : 'text-secondary hover:text-primary'
@@ -178,7 +178,7 @@ const Navbar = () => {
               {/* Emergency CTA in nav (Rule 1: Crimson reserved for primary CTA) */}
               <Link
                 to="/emergency-request"
-                className="emergency-pulse ml-1.5 xl:ml-2 flex items-center space-x-1.5 px-3 xl:px-3.5 py-1.5 rounded-full text-xs font-extrabold text-white bg-danger-solid hover:bg-danger-hover shadow-glow-danger transition-all hover:scale-105 whitespace-nowrap shrink-0"
+                className="emergency-pulse ml-1 xl:ml-2 flex items-center space-x-1.5 px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs font-extrabold text-white bg-danger-solid hover:bg-danger-hover shadow-glow-danger transition-all hover:scale-105 whitespace-nowrap shrink-0"
               >
                 <Activity className="w-3.5 h-3.5 text-white animate-pulse" />
                 <span>Emergency Request</span>
@@ -186,22 +186,29 @@ const Navbar = () => {
             </div>
 
             {/* RIGHT: User Profile & Actions */}
-            <div className="hidden lg:flex items-center justify-end space-x-3 shrink-0">
-              <ThemeToggle />
+            <div className="hidden lg:flex items-center justify-end space-x-2.5 xl:space-x-3 min-w-0">
+              <div className="shrink-0">
+                <ThemeToggle />
+              </div>
 
               {user ? (
-                <div className="flex items-center space-x-3 px-3 py-1.5 rounded-full border border-hairline bg-surface/60 backdrop-blur-md">
-                  <div className="w-8 h-8 rounded-full bg-info/10 text-primary font-black text-xs flex items-center justify-center border border-info/30">
+                <div className="flex items-center space-x-2.5 xl:space-x-3 px-2.5 xl:px-3 py-1.5 rounded-full border border-hairline bg-surface/60 backdrop-blur-md min-w-0 max-w-full">
+                  <div className="w-8 h-8 rounded-full bg-info/10 text-primary font-black text-xs flex items-center justify-center border border-info/30 shrink-0">
                     {user.name?.charAt(0).toUpperCase() || 'U'}
                   </div>
-                  <div className="text-left hidden xl:block">
-                    <div className="text-xs font-bold text-primary leading-tight">{user.name}</div>
+                  <div className="text-left hidden xl:block min-w-0">
+                    <div
+                      title={user.name}
+                      className="text-xs font-bold text-primary leading-tight max-w-[140px] 2xl:max-w-[190px] truncate"
+                    >
+                      {user.name}
+                    </div>
                     <Badge accountType={currentType} />
                   </div>
                   <button
                     onClick={handleLogout}
                     title="Sign Out"
-                    className="p-1.5 text-muted hover:text-danger hover:bg-danger/10 rounded-full transition-colors ml-1 cursor-pointer"
+                    className="p-1.5 text-muted hover:text-danger hover:bg-danger/10 rounded-full transition-colors ml-1 cursor-pointer shrink-0"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>
