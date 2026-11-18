@@ -45,8 +45,12 @@ const googleAuth = async (req, res, next) => {
     }
     return sendSuccess(res, 'Google login successful', result, 200);
   } catch (error) {
-    if (isDbError(error)) return next ? next(error) : sendError(res, error.message, 500);
-    return sendError(res, error.message, error.statusCode || 401);
+    const errorClass = error.name || error.constructor?.name || 'Error';
+    console.error(`[GoogleAuth Controller] Error class: ${errorClass}`);
+    if (isDbError(error)) {
+      return sendError(res, 'Database error during Google sign-in. Please try again.', 500);
+    }
+    return sendError(res, error.message || 'Google sign-in failed', error.statusCode || 401);
   }
 };
 

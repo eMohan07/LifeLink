@@ -73,8 +73,8 @@ const Login = () => {
   };
 
   return (
-    <PageTransition className="min-h-[80vh] flex items-center justify-center p-3 sm:p-6 py-6 sm:py-10">
-      <div className="w-full max-w-4xl rounded-3xl overflow-hidden flex flex-col md:flex-row glass-modal border border-hairline shadow-elevated">
+    <PageTransition className="min-h-[calc(100vh-10rem)] flex flex-col items-center justify-center p-3 sm:p-6 pt-6 sm:pt-10 md:pt-12 pb-12">
+      <div className="w-full max-w-4xl rounded-3xl overflow-hidden flex flex-col md:flex-row glass-modal border border-hairline shadow-elevated relative z-10 mt-3 sm:mt-5">
         {/* Left Visual Branding Panel (Midnight Navy Foundation with subtle harmonic glows) */}
         <div
           className="dark md:w-5/12 p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden hidden md:flex border-r border-hairline bg-[#0A0F1C]"
@@ -137,7 +137,7 @@ const Login = () => {
         </div>
 
         {/* Right Form Panel */}
-        <div className="w-full md:w-7/12 p-6 sm:p-10 relative bg-surface backdrop-blur-xl">
+        <div className="w-full md:w-7/12 p-6 sm:p-10 relative bg-surface">
           {/* Mobile Top Brand Bar */}
           <div className="md:hidden flex items-center justify-between pb-6 mb-6 border-b border-hairline">
             <Link to="/" className="inline-flex items-center space-x-2">

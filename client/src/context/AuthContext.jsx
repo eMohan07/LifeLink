@@ -72,7 +72,11 @@ export const AuthProvider = ({ children }) => {
     const res = await authApi.loginWithGoogle(payload);
     if (res.data) {
       if (res.data.needsProfile) {
-        return res.data;
+        return {
+          needsProfile: true,
+          email: res.data.data?.email || res.data.email,
+          name: res.data.data?.name || res.data.name,
+        };
       }
       if (res.data.success) {
         const userData = res.data.data;

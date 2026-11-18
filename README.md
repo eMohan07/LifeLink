@@ -25,7 +25,7 @@ LifeLink is an emergency response web application powered by **Google Cloud Fire
 - 🛡️ **Role-Based Access Control**: Strict JWT authentication with distinct access controls for standard `user` (donor & recipient), verified `hospital`, and system `admin`.
 - 💎 **Liquid Glass & Spatial UI**: Apple-inspired translucent glass aesthetic with 5 spatial elevation tiers, 4 harmonic drifting atmospheric orbs, dynamic refraction filters, and full light/dark mode support.
 - 📊 **AI Insights & Platform Analytics**: Administrative dashboard with emergency response time indicators, platform health metrics, shortage prediction alerts, and an interactive AI Chatbot assistant.
-- 🧪 **Comprehensive Automated Testing & QA**: 320 automated Jest + Supertest backend tests (22 test suites, 100% pass) alongside automated WCAG 2.1 AA/AAA contrast checks and Playwright visual audits.
+- 🧪 **Comprehensive Automated Testing & QA**: 333 automated Jest + Supertest backend tests (23 test suites, 100% pass) alongside automated WCAG 2.1 AA/AAA contrast checks and Playwright visual audits.
 
 ---
 
@@ -79,7 +79,7 @@ LifeLink features a refined **"Midnight Navy + Crimson + Ice"** design system bu
 | **Backend** | Node.js, Express.js 4, `firebase-admin` 14, JWT, bcryptjs, Zod validation |
 | **Database & Cloud** | Google Cloud Firestore (Uniform Repository Architecture), Firebase Auth |
 | **Authentication** | Custom JWT + bcryptjs & Google Login (Firebase Auth ID Token verification) |
-| **Testing & QA** | Jest, Supertest, Playwright, `@axe-core/playwright` (269 automated tests) |
+| **Testing & QA** | Jest, Supertest, Playwright, `@axe-core/playwright` (333 automated tests) |
 
 ---
 
@@ -236,11 +236,11 @@ LifeLink includes a rigorous automated testing and accessibility assurance suite
 
 ### Backend Automated Tests (Jest + Supertest)
 ```bash
-# Run 320 automated backend tests
+# Run 333 automated backend tests
 cd server
 npm test
 ```
-- **22 Test Suites / 320 Tests**: 100% pass rate.
+- **23 Test Suites / 333 Tests**: 100% pass rate.
 - Covers authentication, blood compatibility scoring, spatial matching algorithms, donation fulfillment, hospital workflows, transaction integrity, rate limiting, and role guards.
 
 ### Automated WCAG Contrast Audit
@@ -438,7 +438,7 @@ LifeLink/
 │   │   ├── app.js                   # Express application setup
 │   │   ├── index.js                 # Server entry point
 │   │   └── seed.js                  # Database seed and reset script
-│   ├── tests/                       # Automated Jest + Supertest suites (177 tests)
+│   ├── tests/                       # Automated Jest + Supertest suites (333 tests)
 │   └── .env.example
 ├── docs/                            # Documentation
 │   ├── design-system.md             # Liquid Glass & Spatial UI specification
