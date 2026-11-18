@@ -298,12 +298,34 @@ class InMemoryFirestore {
 
 class InMemoryAuth {
   async verifyIdToken(idToken) {
+    if (idToken === 'mock_mismatched_project_token') {
+      return {
+        uid: 'google_mock_foreign_uid',
+        email: 'foreign_project@gmail.com',
+        email_verified: true,
+        name: 'Foreign Project User',
+        aud: 'mismatched-cloud-project',
+        firebase: { project_id: 'mismatched-cloud-project' },
+      };
+    }
+    if (idToken === 'mock_unverified_email_token') {
+      return {
+        uid: 'google_mock_unverified_uid',
+        email: 'unverified_email@gmail.com',
+        email_verified: false,
+        name: 'Unverified Email User',
+        aud: 'lifelink-test-isolated',
+        firebase: { project_id: 'lifelink-test-isolated' },
+      };
+    }
     if (idToken === 'mock_google_id_token' || idToken.startsWith('mock_')) {
       return {
         uid: 'google_mock_uid_123',
         email: 'mock_google_user@gmail.com',
         email_verified: true,
         name: 'Mock Google User',
+        aud: 'lifelink-test-isolated',
+        firebase: { project_id: 'lifelink-test-isolated' },
       };
     }
     // Attempt decoding if it looks like a JWT
@@ -317,6 +339,8 @@ class InMemoryAuth {
             email: payload.email,
             email_verified: payload.email_verified !== false,
             name: payload.name || payload.email.split('@')[0],
+            aud: payload.aud || 'lifelink-test-isolated',
+            firebase: { project_id: payload.project_id || payload.aud || 'lifelink-test-isolated' },
           };
         }
       }

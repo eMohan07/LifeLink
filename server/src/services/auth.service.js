@@ -146,20 +146,33 @@ const getCurrentUser = async (userId) => {
 const loginWithGoogle = async ({ idToken, bloodGroup, phone }) => {
   const crypto = require('crypto');
   const { BLOOD_GROUPS } = require('../utils/bloodCompatibility');
-  const { getAuth } = require('../config/db');
+  const { getAuth, getProjectId } = require('../config/db');
 
   let decoded;
   try {
     const auth = getAuth();
     decoded = await auth.verifyIdToken(idToken);
   } catch (err) {
-    const error = new Error('Invalid or expired Google authentication token');
+    const errClass = err.name || err.code || 'TokenVerificationError';
+    console.error(`[GoogleAuth] Error: ${errClass}`);
+    const error = new Error('Invalid or expired Google authentication token. Please try again.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Verify the ID token belongs to the matching Firebase project
+  const activeProjectId = getProjectId();
+  const tokenProjectId = decoded.firebase?.project_id || decoded.aud;
+  if (activeProjectId && tokenProjectId && tokenProjectId !== activeProjectId) {
+    console.error('[GoogleAuth] Error: ProjectMismatchError');
+    const error = new Error('Authentication project mismatch. Please check your Firebase configuration.');
     error.statusCode = 401;
     throw error;
   }
 
   if (!decoded.email_verified) {
-    const error = new Error('Google email address must be verified to continue');
+    console.error('[GoogleAuth] Error: EmailNotVerifiedError');
+    const error = new Error('Google email address must be verified to continue.');
     error.statusCode = 401;
     throw error;
   }
@@ -168,7 +181,16 @@ const loginWithGoogle = async ({ idToken, bloodGroup, phone }) => {
   let user = await User.findByEmail(email);
 
   if (user) {
-    // Existing user logs in unchanged
+    // Existing user: disallow Google sign-in for hospital or admin accounts
+    if (user.accountType === 'hospital' || user.accountType === 'admin') {
+      console.error('[GoogleAuth] Error: AccountTypeNotAllowedError');
+      const error = new Error(`Account type '${user.accountType}' is not permitted to sign in via Google. Please use email and password.`);
+      error.statusCode = 403;
+      error.code = 'ACCOUNT_TYPE_NOT_ALLOWED';
+      throw error;
+    }
+
+    // Existing donor/user logs in unchanged
     let userBloodGroup = undefined;
     if (user.accountType === 'user') {
       const donorProfile = await DonorProfile.findByUserId(user._id);
@@ -216,6 +238,7 @@ const loginWithGoogle = async ({ idToken, bloodGroup, phone }) => {
   const userName = decoded.name || email.split('@')[0];
 
   // Strictly create as accountType 'user' (never admin or hospital)
+  // Hospital/admin elevation is impossible via Google sign-in
   user = await User.create({
     name: userName,
     email,
