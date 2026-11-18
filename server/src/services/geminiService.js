@@ -16,10 +16,10 @@ const DEFAULT_TIMEOUT_MS = 6000;
  * Any other error skips directly to Provider A.
  */
 const MODEL_CHAIN = [
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b',
-  'gemini-1.0-pro',
+  'gemini-3.8-flash',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
 ];
 
 /**
@@ -35,7 +35,7 @@ function getAiConfig() {
   // Allow AI_MODEL to override only the primary model in the chain
   const primaryOverride = process.env.AI_MODEL;
   const modelChain =
-    primaryOverride && !['gemini-2.0-flash', 'gemini-1.5-flash'].includes(primaryOverride)
+    primaryOverride && primaryOverride !== 'gemini-3.8-flash'
       ? [primaryOverride, ...MODEL_CHAIN.filter((m) => m !== primaryOverride)]
       : [...MODEL_CHAIN];
 
